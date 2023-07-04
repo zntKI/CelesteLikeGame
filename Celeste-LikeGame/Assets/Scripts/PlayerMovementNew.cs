@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovementNew : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private CapsuleCollider2D coll;
 
     private float dirXR;
 
@@ -22,7 +19,7 @@ public class PlayerMovementNew : MonoBehaviour
     [Header("Jump")]
 
     [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private LayerMask jumpableGround;
+    [SerializeField] private LayerMask ground;
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
     [SerializeField] private float jumpBufferTime = 0.2f;
@@ -31,16 +28,11 @@ public class PlayerMovementNew : MonoBehaviour
     private bool canJumpAgain = true; /*if the player tries hold down the jump button and bunnyhop*/
     private float lastTimeOnGround = 0f;
 
-    [Space(10)]
-    [Header("Wall Interaction")]
-
-    [SerializeField] private float wallSlidingSpeed = 0.2f;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
-        coll = gameObject.GetComponent<CapsuleCollider2D>();
     }
 
     // Update is called once per frame
@@ -64,15 +56,6 @@ public class PlayerMovementNew : MonoBehaviour
 
         if (Input.GetButtonUp("Jump"))
             canJumpAgain = true;
-
-        #endregion
-
-        #region Wall Movement
-
-        //if (IsStickingToWall())
-        //{
-        //    WallSlide();
-        //}
 
         #endregion
     }
@@ -117,30 +100,6 @@ public class PlayerMovementNew : MonoBehaviour
             rb.velocity += (fallMultiplier - 1) * rb.gravityScale * Time.deltaTime * Vector2.down;
         else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
             rb.velocity += (lowJumpMultiplier - 1) * rb.gravityScale * Time.deltaTime * Vector2.up;
-    }
-
-    private void WallSlide()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
-    }
-
-    private bool IsStickingToWall()
-    {
-        var stickFromRight = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.right, .1f, jumpableGround);
-        var stickFromLeft = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.left, .1f, jumpableGround);
-
-        //wallIsRight = stickFromRight ? true : false;
-
-        return (stickFromRight || stickFromLeft);
-
-        //if (stickFromRight || stickFromLeft)
-        //{
-        //    return true;
-        //}
-        //else
-        //{
-        //    return false;
-        //}
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
