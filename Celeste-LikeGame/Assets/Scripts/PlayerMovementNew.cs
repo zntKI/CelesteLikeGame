@@ -64,14 +64,17 @@ public class PlayerMovementNew : MonoBehaviour
     {
         #region Run
 
-        float targetSpeed = dirXR * moveSpeed;
-        float speedDif = targetSpeed - rb.velocity.x;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
-        float movement = Mathf.Abs(speedDif) * accelRate * Mathf.Sign(speedDif);
+        if (!PlayerCommon.isWallJumping)
+        {
+            float targetSpeed = dirXR * moveSpeed;
+            float speedDif = targetSpeed - rb.velocity.x;
+            float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+            float movement = Mathf.Abs(speedDif) * accelRate * Mathf.Sign(speedDif);
 
-        //Debug.Log($"TargetSpeed: {targetSpeed}; SpeedDif: {speedDif:f2}; AccelRate: {accelRate}; Movement: {movement:f2}; Vel: {rb.velocity.x}");
+            //Debug.Log($"TargetSpeed: {targetSpeed}; SpeedDif: {speedDif:f2}; AccelRate: {accelRate}; Movement: {movement:f2}; Vel: {rb.velocity.x}");
 
-        rb.AddForce(movement * Vector2.right);
+            rb.AddForce(movement * Vector2.right);
+        }
 
         #endregion
 
