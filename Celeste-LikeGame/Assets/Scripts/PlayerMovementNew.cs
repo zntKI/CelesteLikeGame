@@ -63,7 +63,7 @@ public class PlayerMovementNew : MonoBehaviour
     {
         #region Run
 
-        if (!PlayerCommon.isWallJumping)
+        if (!PlayerCommon.isWallJumping && !PlayerCommon.isDashingForMovementStop)
         {
             float targetSpeed = PlayerCommon.dirXR * moveSpeed;
             float speedDif = targetSpeed - PlayerCommon.rb.velocity.x;

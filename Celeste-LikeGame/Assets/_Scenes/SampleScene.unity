@@ -331,8 +331,10 @@ GameObject:
   - component: {fileID: 945326594}
   - component: {fileID: 945326593}
   - component: {fileID: 945326592}
+  - component: {fileID: 945326598}
   - component: {fileID: 945326591}
   - component: {fileID: 945326597}
+  - component: {fileID: 945326599}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -357,9 +359,6 @@ MonoBehaviour:
   decceleration: 16
   frictionAmount: 0.22
   jumpForce: 8
-  ground:
-    serializedVersion: 2
-    m_Bits: 0
   fallMultiplier: 4
   lowJumpMultiplier: 3.5
   jumpBufferTime: 0.2
@@ -508,14 +507,40 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 64
-  wallSlidingSpeed: 3
+  wallMovementSpeed: 3
   stickingToWallMaxTime: 5
   overlapBoxSize: {x: 0.17, y: 1.19}
   rightCollisionOffset: {x: 0.5, y: 0}
   leftCollisionOffset: {x: -0.5, y: 0}
-  wallJumpingTime: 0.2
-  wallJumpingDuration: 0.4
-  wallJumpingPower: {x: 8, y: 16}
+  wallJumpingTime: 0.45
+  wallJumpingPower: {x: 6, y: 12}
+--- !u!114 &945326598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945326590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40dc75ab0c7732c49b15a04cad10ce1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &945326599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945326590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8c1743749c38fd4b9eb6b097352bf0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashingTime: 0.3
+  dashingDuration: 0.5
+  dashPower: {x: 16, y: 16}
 --- !u!1 &1002156206
 GameObject:
   m_ObjectHideFlags: 0

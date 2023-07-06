@@ -4,7 +4,7 @@ public class PlayerWallMovement : MonoBehaviour
 {
     //private Rigidbody2D rb;
     private CapsuleCollider2D coll;
-    private float gravityScale;
+    //private float gravityScale;
 
     //private float dirXR;
     //private float dirYR;
@@ -12,7 +12,7 @@ public class PlayerWallMovement : MonoBehaviour
     [Header("Wall Moving")]
 
     [SerializeField] private LayerMask ground;
-    [SerializeField] private float wallSlidingSpeed = 0.2f;
+    [SerializeField] private float wallMovementSpeed = 0.2f;
     [SerializeField] private float stickingToWallMaxTime = 5f;
     [SerializeField] private Vector2 overlapBoxSize;
     [SerializeField] private Vector2 rightCollisionOffset, leftCollisionOffset;
@@ -35,8 +35,7 @@ public class PlayerWallMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerCommon.rb = GetComponent<Rigidbody2D>();
-        gravityScale = PlayerCommon.rb.gravityScale;
+        //gravityScale = PlayerCommon.rb.gravityScale;
         coll = GetComponent<CapsuleCollider2D>();
     }
 
@@ -46,25 +45,29 @@ public class PlayerWallMovement : MonoBehaviour
         //PlayerCommon.dirXR = Input.GetAxisRaw("Horizontal");
         //PlayerCommon.dirYR = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKeyUp(KeyCode.LeftControl) || !IsStickingToWall())
+        WallMovement();
+        WallJump();
+    }
+
+    private void WallMovement()
+    {
+        if (Input.GetKeyUp(KeyCode.LeftControl) || (!IsStickingToWall() && !PlayerCommon.isDashingForDuration))
         {
-            PlayerCommon.rb.gravityScale = gravityScale;
+            PlayerCommon.rb.gravityScale = PlayerCommon.gravityScale;
         }
 
         if (stickingToWallTimer > stickingToWallMaxTime)
         {
-            PlayerCommon.rb.gravityScale = gravityScale;
+            PlayerCommon.rb.gravityScale = PlayerCommon.gravityScale;
             canHoldOntoWalls = false;
         }
 
         if (IsStickingToWall() && Input.GetKey(KeyCode.LeftControl) && canHoldOntoWalls)
         {
             PlayerCommon.rb.gravityScale = 0f;
-            PlayerCommon.rb.velocity = new Vector2(PlayerCommon.rb.velocity.x, PlayerCommon.dirYR * wallSlidingSpeed);
+            PlayerCommon.rb.velocity = new Vector2(PlayerCommon.rb.velocity.x, PlayerCommon.dirYR * wallMovementSpeed);
             stickingToWallTimer += Time.deltaTime;
         }
-
-        WallJump();
     }
 
     private void WallJump()
