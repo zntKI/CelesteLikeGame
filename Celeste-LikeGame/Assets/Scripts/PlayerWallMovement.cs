@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class PlayerWallMovement : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    //private Rigidbody2D rb;
     private CapsuleCollider2D coll;
     private float gravityScale;
 
-    private float dirXR;
-    private float dirYR;
+    //private float dirXR;
+    //private float dirYR;
 
     [Header("Wall Moving")]
 
@@ -24,7 +24,6 @@ public class PlayerWallMovement : MonoBehaviour
     [Header("Wall Jumping")]
 
     [SerializeField] private float wallJumpingTime = 0.2f;
-    [SerializeField] private float wallJumpingDuration = 0.4f;
     [SerializeField] private Vector2 wallJumpingPower;
 
     //private bool isWallJumping;
@@ -36,32 +35,32 @@ public class PlayerWallMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        gravityScale = rb.gravityScale;
+        PlayerCommon.rb = GetComponent<Rigidbody2D>();
+        gravityScale = PlayerCommon.rb.gravityScale;
         coll = GetComponent<CapsuleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        dirXR = Input.GetAxisRaw("Horizontal");
-        dirYR = Input.GetAxisRaw("Vertical");
+        //PlayerCommon.dirXR = Input.GetAxisRaw("Horizontal");
+        //PlayerCommon.dirYR = Input.GetAxisRaw("Vertical");
 
         if (Input.GetKeyUp(KeyCode.LeftControl) || !IsStickingToWall())
         {
-            rb.gravityScale = gravityScale;
+            PlayerCommon.rb.gravityScale = gravityScale;
         }
 
         if (stickingToWallTimer > stickingToWallMaxTime)
         {
-            rb.gravityScale = gravityScale;
+            PlayerCommon.rb.gravityScale = gravityScale;
             canHoldOntoWalls = false;
         }
 
         if (IsStickingToWall() && Input.GetKey(KeyCode.LeftControl) && canHoldOntoWalls)
         {
-            rb.gravityScale = 0f;
-            rb.velocity = new Vector2(rb.velocity.x, dirYR * wallSlidingSpeed);
+            PlayerCommon.rb.gravityScale = 0f;
+            PlayerCommon.rb.velocity = new Vector2(PlayerCommon.rb.velocity.x, PlayerCommon.dirYR * wallSlidingSpeed);
             stickingToWallTimer += Time.deltaTime;
         }
 
@@ -75,17 +74,18 @@ public class PlayerWallMovement : MonoBehaviour
             wallJumpingCounter -= Time.deltaTime;
         }
 
-        if (wallJumpingCounter < 0)
+        bool timePeriodCanMove = wallJumpingCounter > 0 && wallJumpingCounter < wallJumpingTime / 2;
+        if (wallJumpingCounter < 0 || (IsStickingToWall() && PlayerCommon.isWallJumping && timePeriodCanMove))
         {
             PlayerCommon.isWallJumping = false;
             wallJumpingCounter = 0f;
         }
 
-        if (IsStickingToWall() && Input.GetButtonDown("Jump"))
+        if (IsStickingToWall() && Input.GetButtonDown("Jump") && PlayerCommon.isNotGrounded)
         {
             PlayerCommon.isWallJumping = true;
             wallJumpingDirection = isWallRight ? -1f : 1f;
-            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            PlayerCommon.rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
             wallJumpingCounter = wallJumpingTime;
         }
     }

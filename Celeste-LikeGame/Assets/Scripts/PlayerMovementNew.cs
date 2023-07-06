@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class PlayerMovementNew : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    //private Rigidbody2D rb;
 
-    private float dirXR;
+    //private float dirXR;
 
     [Header("Movement")]
 
@@ -19,12 +19,11 @@ public class PlayerMovementNew : MonoBehaviour
     [Header("Jump")]
 
     [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private LayerMask ground;
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
     [SerializeField] private float jumpBufferTime = 0.2f;
 
-    private bool isJumping = false;
+    //private bool isGrounded = false;
     private bool canJumpAgain = true; /*if the player tries hold down the jump button and bunnyhop*/
     private float lastTimeOnGround = 0f;
 
@@ -32,26 +31,26 @@ public class PlayerMovementNew : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = gameObject.GetComponent<Rigidbody2D>();
+        PlayerCommon.rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        dirXR = Input.GetAxisRaw("Horizontal");
+        //dirXR = Input.GetAxisRaw("Horizontal");
 
         #region Jump
 
         JumpHeightController();
 
-        if (isJumping)
+        if (PlayerCommon.isNotGrounded)
             lastTimeOnGround += Time.deltaTime;
 
         //Normal jump
-        if (Input.GetButton("Jump") && !isJumping && canJumpAgain)
+        if (Input.GetButton("Jump") && !PlayerCommon.isNotGrounded && canJumpAgain)
             Jump();
         //Coyote time
-        if (isJumping && lastTimeOnGround <= jumpBufferTime && Input.GetButton("Jump") && canJumpAgain)
+        if (PlayerCommon.isNotGrounded && lastTimeOnGround <= jumpBufferTime && Input.GetButton("Jump") && canJumpAgain)
             Jump();
 
         if (Input.GetButtonUp("Jump"))
@@ -66,14 +65,14 @@ public class PlayerMovementNew : MonoBehaviour
 
         if (!PlayerCommon.isWallJumping)
         {
-            float targetSpeed = dirXR * moveSpeed;
-            float speedDif = targetSpeed - rb.velocity.x;
+            float targetSpeed = PlayerCommon.dirXR * moveSpeed;
+            float speedDif = targetSpeed - PlayerCommon.rb.velocity.x;
             float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
             float movement = Mathf.Abs(speedDif) * accelRate * Mathf.Sign(speedDif);
 
             //Debug.Log($"TargetSpeed: {targetSpeed}; SpeedDif: {speedDif:f2}; AccelRate: {accelRate}; Movement: {movement:f2}; Vel: {rb.velocity.x}");
 
-            rb.AddForce(movement * Vector2.right);
+            PlayerCommon.rb.AddForce(movement * Vector2.right);
         }
 
         #endregion
@@ -81,11 +80,11 @@ public class PlayerMovementNew : MonoBehaviour
 
         #region Friction
 
-        if (isJumping == false && dirXR == 0)
+        if (PlayerCommon.isNotGrounded == false && PlayerCommon.dirXR == 0)
         {
-            float amount = Mathf.Min(Mathf.Abs(rb.velocity.x), Mathf.Abs(frictionAmount));
-            amount *= Mathf.Sign(rb.velocity.x);
-            rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+            float amount = Mathf.Min(Mathf.Abs(PlayerCommon.rb.velocity.x), Mathf.Abs(frictionAmount));
+            amount *= Mathf.Sign(PlayerCommon.rb.velocity.x);
+            PlayerCommon.rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
         }
 
         #endregion
@@ -95,21 +94,21 @@ public class PlayerMovementNew : MonoBehaviour
     {
         //tempDirXForJump = Mathf.Clamp(dirX, -dirXConstraintForJumpHeight, dirXConstraintForJumpHeight);
         //rb.velocity = new Vector2(rb.velocity.x, jumpForce/* - Mathf.Abs(jumpForce * tempDirXForJump)*/);
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        PlayerCommon.rb.velocity = new Vector2(PlayerCommon.rb.velocity.x, jumpForce);
     }
     private void JumpHeightController()
     {
-        if (rb.velocity.y < 0)
-            rb.velocity += (fallMultiplier - 1) * rb.gravityScale * Time.deltaTime * Vector2.down;
-        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
-            rb.velocity += (lowJumpMultiplier - 1) * rb.gravityScale * Time.deltaTime * Vector2.up;
+        if (PlayerCommon.rb.velocity.y < 0)
+            PlayerCommon.rb.velocity += (fallMultiplier - 1) * PlayerCommon.rb.gravityScale * Time.deltaTime * Vector2.down;
+        else if (PlayerCommon.rb.velocity.y > 0 && !Input.GetButton("Jump"))
+            PlayerCommon.rb.velocity += (lowJumpMultiplier - 1) * PlayerCommon.rb.gravityScale * Time.deltaTime * Vector2.up;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            isJumping = false;
+            PlayerCommon.isNotGrounded = false;
             lastTimeOnGround = 0f;
             if (Input.GetButton("Jump"))
                 canJumpAgain = false;
@@ -120,7 +119,7 @@ public class PlayerMovementNew : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            isJumping = true;
+            PlayerCommon.isNotGrounded = true;
         }
     }
 }
