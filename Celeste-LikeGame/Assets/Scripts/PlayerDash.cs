@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerDash : MonoBehaviour
 {
+    //TODO: Fix dashing sideways only once when being grounded
+
     [SerializeField] private float dashingTime = 0.5f;
     [SerializeField] private float dashingDuration = 0.5f;
     //[SerializeField] private Vector2 dashPower;
@@ -14,12 +16,7 @@ public class PlayerDash : MonoBehaviour
     private float dashingDurationCounter = 0f;
 
     private bool canDashAgain = true;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private bool hasLeftGroundWhenDashing = false; //used for enabling the player to dash again if his previous dash has been only sideways
 
     // Update is called once per frame
     void Update()
@@ -62,7 +59,14 @@ public class PlayerDash : MonoBehaviour
             dashingDurationCounter = dashingDuration;
             PlayerCommon.isDashingForDuration = true;
 
-            canDashAgain = false;
+            if (!hasLeftGroundWhenDashing)
+            {
+                canDashAgain = true;
+            }
+            else
+            {
+                canDashAgain = false;
+            }
         }
     }
 
@@ -71,6 +75,15 @@ public class PlayerDash : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             canDashAgain = true;
+            hasLeftGroundWhenDashing = false;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            hasLeftGroundWhenDashing = true;
         }
     }
 }
