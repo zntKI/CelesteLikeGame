@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerMovementNew : MonoBehaviour
 {
+    //TODO: Make the movement less sloppy overall, more responsive; Fix jump height
+
     //private Rigidbody2D rb;
 
     //private float dirXR;

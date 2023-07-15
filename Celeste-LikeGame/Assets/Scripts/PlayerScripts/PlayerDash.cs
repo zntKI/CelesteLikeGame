@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerDash : MonoBehaviour
 {
-    //TODO: Fix dashing sideways only once when being grounded
 
     [SerializeField] private float dashingTime = 0.5f;
     [SerializeField] private float dashingDuration = 0.5f;

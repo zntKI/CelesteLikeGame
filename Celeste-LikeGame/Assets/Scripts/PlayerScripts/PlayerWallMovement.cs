@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerWallMovement : MonoBehaviour
 {
+    //TODO: Add wall sliding(sliding faster when going down); Jump away from the wall even more when wall jumping
+
     //private Rigidbody2D rb;
     private CapsuleCollider2D coll;
     //private float gravityScale;
